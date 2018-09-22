@@ -1,0 +1,17 @@
+{
+  "first_name": "name",
+  "last_name": "last name",
+  "username": "username123123",
+  "email": "asjdhajsdh@gmail.com",
+  "password": "password1",
+  "password_confirm": "password1",
+  "postcode": "71000",
+  "street_name": "street name",
+  "city_name": "city name",
+  "birth_day": "1",
+  "birth_month": "JAN",
+  "birth_year": "1995",
+  "phone_code": "+",
+  "employer_name": "employer name",
+  "profession": "profession"
+}

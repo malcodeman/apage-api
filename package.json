@@ -1,0 +1,22 @@
+{
+  "name": "cypress-naga",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malcodeman/cypress-naga.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/malcodeman/cypress-naga/issues"
+  },
+  "homepage": "https://github.com/malcodeman/cypress-naga#readme",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:all": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^3.1.0"
+  }
+}
