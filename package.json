@@ -17,6 +17,7 @@
     "cypress:all": "cypress run"
   },
   "devDependencies": {
-    "cypress": "^3.1.0"
+    "cypress": "^3.1.0",
+    "faker": "^4.1.0"
   }
 }
