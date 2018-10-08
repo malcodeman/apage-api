@@ -57,3 +57,22 @@ Cypress.Commands.add('sms_verify', () => {
     console.log('sms_verify works');
   });
 });
+Cypress.Commands.add('verify_document', document_type => {
+  cy.request({
+    method: 'POST',
+    url: Cypress.env('api_url') + 'verification/reference/save',
+    headers: {
+      'accept-version': '1.*',
+      'Content-Type': 'application/json',
+      platform: 'web-naga-markets'
+    },
+    body: {
+      data: {
+        document_type,
+        reference_id: '3b9d62c8-f2e7-4ecb-a151-63588107783f'
+      }
+    }
+  }).then(res => {
+    console.log(`Verified ${document_type}`);
+  });
+});

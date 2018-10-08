@@ -2,7 +2,7 @@ import faker from 'faker';
 
 describe('Campaign', () => {
   beforeEach(() => {
-    cy.visit('https://campaign.sxdev.io/');
+    cy.visit('https://www.sxdev.io/card/');
   });
   it('campaign flow', () => {
     //faker.locale = "de";
@@ -10,8 +10,8 @@ describe('Campaign', () => {
       username: faker.internet.userName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      country: 'Bosnia and Herzegovina',
-      country_code: 'BA',
+      country: 'Germany',
+      country_code: 'DE',
       phone_number: faker.phone.phoneNumberFormat(0),
       first_name: faker.name.firstName(),
       last_name: faker.name.lastName(),
@@ -20,38 +20,39 @@ describe('Campaign', () => {
       street: faker.address.streetName(),
       city: faker.address.city()
     };
-    // Username
-    cy.get('input._username')
-      .type(user.username)
-      .should('have.value', user.username);
-    // Email
-    cy.get('input._email')
-      .type(user.email)
-      .should('have.value', user.email);
-    // Password
-    cy.get('input._password')
-      .type(user.password)
-      .should('have.value', user.password);
-    // Select Sweden as country
-    cy.get('select._country')
+
+    cy.get('a.s-top__apply-link').click();
+    cy.get('select[name=country]')
       .select(user.country)
       .should('have.value', user.country_code);
+    cy.get('button.modal-sepa__actions-btn').click();
 
-    cy.get('.f-signup__button').click();
+    // Create Account
 
-    cy.get('select[name=addr_country]').contains(user.country);
-    cy.get('input[name=first_name]')
-      .type(user.first_name)
-      .should('have.value', user.first_name);
-    cy.get('input[name=last_name]')
-      .type(user.last_name)
-      .should('have.value', user.last_name);
+    cy.get('input[name=first_name]').type(user.first_name);
+    cy.get('input[name=last_name]').type(user.last_name);
+    cy.get('input[name=username]').type(user.username);
+    cy.get('input[name=email]').type(user.email);
+    cy.get('input[name=password]').type(user.password);
+    cy.get('input[name=password_confirm]').type(user.password);
     cy.get('input[name=phone_code]')
       .clear()
       .type(user.phone_code);
     cy.get('input[name=telephone]').type(
       Cypress.env('twilio_test_phone_number')
     );
+
+    // Needs to click twice
+
+    cy.get('[data-cy=form-next-step-btn]').click();
+
+    // Verify phone modal
+
+    cy.get('[data-cy=verify-phone-btn]').click();
+    cy.get('input[name=sms_code]').type(
+      Cypress.env('twilio_test_verification_code')
+    );
+    cy.get('[data-cy=confirm-verification-code-btn]').click();
 
     // Needs to click twice
     cy.get('[data-cy=form-next-step-btn]').click();
