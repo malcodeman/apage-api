@@ -1,23 +1,21 @@
 {
-  "name": "cypress-naga",
+  "name": "templates-api",
   "version": "1.0.0",
-  "description": "",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/malcodeman/cypress-naga.git"
-  },
-  "author": "",
+  "author": "malcodeman",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/malcodeman/cypress-naga/issues"
-  },
-  "homepage": "https://github.com/malcodeman/cypress-naga#readme",
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:all": "cypress run"
+    "start": "nodemon --require dotenv/config -r esm src/index.js"
   },
   "devDependencies": {
-    "cypress": "^3.1.0",
-    "faker": "^4.1.0"
+    "dotenv": "^8.0.0",
+    "esm": "^3.2.25",
+    "nodemon": "^1.19.1"
+  },
+  "dependencies": {
+    "argon2": "^0.24.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.6.2"
   }
 }

@@ -1,17 +1,26 @@
-[![Cypress.io tests](https://img.shields.io/badge/cypress.io-tests-green.svg?style=flat-square)](https://cypress.io)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+# Templates api
 
-# NAGA e2e tests using cypress testing framework
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/malcodeman/templates-api/blob/master/LICENSE)
 
-## Environment files
-
-```
-cypress.env.json
-```
+Simple RESTful mongoDB API.
 
 ## Usage
 
+.env:
+
+```
+MONGODB_URI = mongodb://root:fakepassword1@ds229448.mlab.com:29448/templates
+PORT = 4000
+```
+
+To start the service run:
+
 ```
 yarn install
-yarn run cypress:open
+yarn start
 ```
+
+## License
+
+[MIT](./LICENSE)
