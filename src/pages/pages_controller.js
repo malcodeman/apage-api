@@ -7,6 +7,7 @@ export async function create(req, res, next) {
     const userId = req.userId;
     const { template, title } = req.body;
     const newPage = {
+      id: nanoid(),
       domain: nanoid(),
       createdAt: Date.now(),
       template,
@@ -32,7 +33,7 @@ export async function get(req, res, next) {
     const userId = req.userId;
     const user = await User.findById(userId, "pages");
 
-    res.status(200).send({ user });
+    res.status(200).send(user.pages);
   } catch (error) {
     res.status(400).send({ exception: "general", error });
   }
