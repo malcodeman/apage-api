@@ -4,9 +4,11 @@
   "author": "malcodeman",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --require dotenv/config -r esm src/index.js"
+    "start": "nodemon --require dotenv/config -r esm src/index.js",
+    "db:drop": "node --require dotenv/config -r esm src/commands/drop"
   },
   "devDependencies": {
+    "chalk": "^2.4.2",
     "dotenv": "^8.0.0",
     "esm": "^3.2.25",
     "nodemon": "^1.19.1"
@@ -16,6 +18,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.6.2"
+    "mongoose": "^5.6.2",
+    "nanoid": "^2.0.3"
   }
 }

@@ -12,6 +12,9 @@ const UserSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now()
+  },
+  pages: {
+    type: Array
   }
 });
 const User = mongoose.model("User", UserSchema);
