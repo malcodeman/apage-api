@@ -28,12 +28,29 @@ export async function create(req, res, next) {
   }
 }
 
-export async function get(req, res, next) {
+export async function getPages(req, res, next) {
   try {
     const userId = req.userId;
     const user = await User.findById(userId, "pages");
 
     res.status(200).send(user.pages);
+  } catch (error) {
+    res.status(400).send({ exception: "general", error });
+  }
+}
+
+export async function getPage(req, res, next) {
+  try {
+    const { domain } = req.params;
+    const user = await User.findOne({ "pages.domain": domain }, "pages");
+
+    if (user) {
+      const page = user.pages.find(page => page.domain === domain);
+
+      res.status(200).send(page);
+    } else {
+      res.status(404).send({ exception: "PageNotFoundException" });
+    }
   } catch (error) {
     res.status(400).send({ exception: "general", error });
   }
