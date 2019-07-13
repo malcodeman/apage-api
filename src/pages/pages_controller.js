@@ -5,13 +5,26 @@ import User from "../users/users_model";
 export async function create(req, res, next) {
   try {
     const userId = req.userId;
-    const { template, title } = req.body;
+    const {
+      template,
+      title,
+      name,
+      tagline,
+      location,
+      cta_button_text,
+      cta_button_link
+    } = req.body;
     const newPage = {
       id: nanoid(),
       domain: nanoid(),
       createdAt: Date.now(),
       template,
-      title
+      title,
+      name,
+      tagline,
+      location,
+      cta_button_text,
+      cta_button_link
     };
     const user = await User.findByIdAndUpdate(
       userId,
@@ -23,6 +36,42 @@ export async function create(req, res, next) {
     const lastPage = user.pages[user.pages.length - 1];
 
     res.status(200).send(lastPage);
+  } catch (error) {
+    res.status(400).send({ exception: "general", error });
+  }
+}
+
+export async function updateDomain(req, res, next) {
+  try {
+    const { domain } = req.params;
+    const userId = req.userId;
+    const user = await User.findOne({ "pages.domain": domain }, "pages");
+
+    if (user) {
+      const pages = user.pages.map(page => {
+        if (page.domain === domain) {
+          const { domain } = req.body;
+
+          return {
+            ...page,
+            domain
+          };
+        }
+        return page;
+      });
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          pages
+        },
+        { new: true, select: "pages" }
+      );
+      const updatedPage = pages.find(page => page.domain === req.body.domain);
+
+      res.status(200).send({ oldDomain: domain, domain: updatedPage.domain });
+    } else {
+      res.status(404).send({ exception: "PageNotFoundException" });
+    }
   } catch (error) {
     res.status(400).send({ exception: "general", error });
   }
