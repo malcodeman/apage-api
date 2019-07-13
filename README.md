@@ -21,6 +21,12 @@ yarn install
 yarn start
 ```
 
+Database commands:
+
+```
+yarn run db:drop
+```
+
 ## License
 
 [MIT](./LICENSE)
