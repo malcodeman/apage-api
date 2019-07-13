@@ -28,6 +28,52 @@ export async function create(req, res, next) {
   }
 }
 
+export async function update(req, res, next) {
+  try {
+    const { domain } = req.params;
+    const userId = req.userId;
+    const user = await User.findOne({ "pages.domain": domain }, "pages");
+
+    if (user) {
+      const pages = user.pages.map(page => {
+        if (page.domain === domain) {
+          const {
+            name,
+            tagline,
+            location,
+            cta_button_text,
+            cta_button_link
+          } = req.body;
+
+          return {
+            ...page,
+            name,
+            tagline,
+            location,
+            cta_button_text,
+            cta_button_link
+          };
+        }
+        return page;
+      });
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          pages
+        },
+        { new: true, select: "pages" }
+      );
+      const updatedPage = pages.find(page => page.domain === domain);
+
+      res.status(200).send(updatedPage);
+    } else {
+      res.status(404).send({ exception: "PageNotFoundException" });
+    }
+  } catch (error) {
+    res.status(400).send({ exception: "general", error });
+  }
+}
+
 export async function getPages(req, res, next) {
   try {
     const userId = req.userId;
