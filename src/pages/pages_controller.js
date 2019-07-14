@@ -14,6 +14,8 @@ export async function create(req, res, next) {
       cta_button_text,
       cta_button_link
     } = req.body;
+    const profileImageURL =
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e";
     const newPage = {
       id: nanoid(),
       domain: nanoid(),
@@ -24,7 +26,8 @@ export async function create(req, res, next) {
       tagline,
       location,
       cta_button_text,
-      cta_button_link
+      cta_button_link,
+      profileImageURL
     };
     const user = await User.findByIdAndUpdate(
       userId,
@@ -115,6 +118,42 @@ export async function update(req, res, next) {
       const updatedPage = pages.find(page => page.domain === domain);
 
       res.status(200).send(updatedPage);
+    } else {
+      res.status(404).send({ exception: "PageNotFoundException" });
+    }
+  } catch (error) {
+    res.status(400).send({ exception: "general", error });
+  }
+}
+
+export async function updateProfileImage(req, res, next) {
+  try {
+    const { domain } = req.params;
+    const userId = req.userId;
+    const user = await User.findOne({ "pages.domain": domain }, "pages");
+
+    if (user) {
+      const pages = user.pages.map(page => {
+        if (page.domain === domain) {
+          const { profileImageURL } = req.body;
+
+          return {
+            ...page,
+            profileImageURL
+          };
+        }
+        return page;
+      });
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          pages
+        },
+        { new: true, select: "pages" }
+      );
+      const updatedPage = pages.find(page => page.domain === domain);
+
+      res.status(200).send({ profileImageURL: updatedPage.profileImageURL });
     } else {
       res.status(404).send({ exception: "PageNotFoundException" });
     }
