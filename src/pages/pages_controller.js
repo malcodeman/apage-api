@@ -14,6 +14,8 @@ export async function create(req, res, next) {
       cta_button_text,
       cta_button_link
     } = req.body;
+    const mainImageURL =
+      "https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5";
     const profileImageURL =
       "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e";
     const newPage = {
@@ -27,6 +29,7 @@ export async function create(req, res, next) {
       location,
       cta_button_text,
       cta_button_link,
+      mainImageURL,
       profileImageURL
     };
     const user = await User.findByIdAndUpdate(
