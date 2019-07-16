@@ -4,6 +4,7 @@ import { requireAuthentication } from "../auth/auth_middleware";
 import {
   create,
   updateDomain,
+  updateMainImage,
   updateProfileImage,
   update,
   getPages,
@@ -18,6 +19,7 @@ router.post(
   requireAuthentication,
   updateDomain
 );
+router.post("/updateMainImage/:domain", requireAuthentication, updateMainImage);
 router.post(
   "/updateProfileImage/:domain",
   requireAuthentication,

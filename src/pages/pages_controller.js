@@ -129,6 +129,42 @@ export async function update(req, res, next) {
   }
 }
 
+export async function updateMainImage(req, res, next) {
+  try {
+    const { domain } = req.params;
+    const userId = req.userId;
+    const user = await User.findOne({ "pages.domain": domain }, "pages");
+
+    if (user) {
+      const pages = user.pages.map(page => {
+        if (page.domain === domain) {
+          const { mainImageURL } = req.body;
+
+          return {
+            ...page,
+            mainImageURL
+          };
+        }
+        return page;
+      });
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          pages
+        },
+        { new: true, select: "pages" }
+      );
+      const updatedPage = pages.find(page => page.domain === domain);
+
+      res.status(200).send({ mainImageURL: updatedPage.mainImageURL });
+    } else {
+      res.status(404).send({ exception: "PageNotFoundException" });
+    }
+  } catch (error) {
+    res.status(400).send({ exception: "general", error });
+  }
+}
+
 export async function updateProfileImage(req, res, next) {
   try {
     const { domain } = req.params;
