@@ -18,6 +18,10 @@ export async function create(req, res, next) {
       "https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5";
     const profileImageURL =
       "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e";
+    const socialLinks = [
+      { id: nanoid(), url: "https://www.instagram.com/dualipa/" },
+      { id: nanoid(), url: "https://www.facebook.com/dualipaofficial/" }
+    ];
     const newPage = {
       id: nanoid(),
       domain: nanoid(),
@@ -30,7 +34,8 @@ export async function create(req, res, next) {
       cta_button_text,
       cta_button_link,
       mainImageURL,
-      profileImageURL
+      profileImageURL,
+      socialLinks
     };
     const user = await User.findByIdAndUpdate(
       userId,
@@ -193,6 +198,46 @@ export async function updateProfileImage(req, res, next) {
       const updatedPage = pages.find(page => page.domain === domain);
 
       res.status(200).send({ profileImageURL: updatedPage.profileImageURL });
+    } else {
+      res.status(404).send({ exception: "PageNotFoundException" });
+    }
+  } catch (error) {
+    res.status(400).send({ exception: "general", error });
+  }
+}
+
+export async function addSocialLink(req, res, next) {
+  try {
+    const { domain } = req.params;
+    const { url } = req.body;
+    const userId = req.userId;
+    const user = await User.findOne({ "pages.domain": domain }, "pages");
+
+    if (user) {
+      const pages = user.pages.map(page => {
+        if (page.domain === domain) {
+          const socialLinks = page.socialLinks;
+
+          socialLinks.push({ id: nanoid(), url });
+
+          return {
+            ...page,
+            socialLinks
+          };
+        }
+        return page;
+      });
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          pages
+        },
+        { new: true, select: "pages" }
+      );
+      const updatedPage = pages.find(page => page.domain === domain);
+      const newUrl = updatedPage.socialLinks.find(link => link.url === url);
+
+      res.status(200).send(newUrl);
     } else {
       res.status(404).send({ exception: "PageNotFoundException" });
     }

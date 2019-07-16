@@ -6,6 +6,7 @@ import {
   updateDomain,
   updateMainImage,
   updateProfileImage,
+  addSocialLink,
   update,
   getPages,
   getPage
@@ -25,6 +26,7 @@ router.post(
   requireAuthentication,
   updateProfileImage
 );
+router.post("/addSocialLink/:domain", requireAuthentication, addSocialLink);
 router.put("/:domain", requireAuthentication, update);
 router.get("/", requireAuthentication, getPages);
 router.get("/:domain", getPage);
