@@ -235,9 +235,48 @@ export async function addSocialLink(req, res, next) {
         { new: true, select: "pages" }
       );
       const updatedPage = pages.find(page => page.domain === domain);
-      const newUrl = updatedPage.socialLinks.find(link => link.url === url);
+      const newUrl =
+        updatedPage.socialLinks[updatedPage.socialLinks.length - 1];
 
       res.status(200).send(newUrl);
+    } else {
+      res.status(404).send({ exception: "PageNotFoundException" });
+    }
+  } catch (error) {
+    res.status(400).send({ exception: "general", error });
+  }
+}
+
+export async function removeSocialLink(req, res, next) {
+  try {
+    const { domain, linkId } = req.params;
+    const userId = req.userId;
+    const user = await User.findOne({ "pages.domain": domain }, "pages");
+
+    if (user) {
+      const pages = user.pages.map(page => {
+        if (page.domain === domain) {
+          const socialLinks = page.socialLinks.filter(
+            link => link.id !== linkId
+          );
+
+          return {
+            ...page,
+            socialLinks
+          };
+        }
+        return page;
+      });
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          pages
+        },
+        { new: true, select: "pages" }
+      );
+      const updatedPage = pages.find(page => page.domain === domain);
+
+      res.status(200).send({ linkId });
     } else {
       res.status(404).send({ exception: "PageNotFoundException" });
     }
