@@ -1,6 +1,7 @@
 import nanoid from "nanoid";
 
 import User from "../users/users_model";
+import usersDAL from "../users/usersDAL";
 
 export async function create(req, res, next) {
   try {
@@ -288,27 +289,43 @@ export async function removeSocialLink(req, res, next) {
 export async function getPages(req, res, next) {
   try {
     const userId = req.userId;
-    const user = await User.findById(userId, "pages");
+    const user = await usersDAL.findUserById(userId);
 
     res.status(200).send(user.pages);
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    const message = error.message;
+    const stack = error.stack;
+
+    if (message === "UserNotFoundException") {
+      res.status(404).send({
+        exception: "UserNotFoundException",
+        message,
+        stack
+      });
+      return;
+    }
+    res.status(400).send({ exception: "General", message, stack });
   }
 }
 
 export async function getPage(req, res, next) {
   try {
     const { domain } = req.params;
-    const user = await User.findOne({ "pages.domain": domain }, "pages");
+    const page = await usersDAL.findPageByDomain(domain);
 
-    if (user) {
-      const page = user.pages.find(page => page.domain === domain);
-
-      res.status(200).send(page);
-    } else {
-      res.status(404).send({ exception: "PageNotFoundException" });
-    }
+    res.status(200).send(page);
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    const message = error.message;
+    const stack = error.stack;
+
+    if (message === "PageNotFoundException") {
+      res.status(404).send({
+        exception: "PageNotFoundException",
+        message,
+        stack
+      });
+      return;
+    }
+    res.status(400).send({ exception: "General", message, stack });
   }
 }
