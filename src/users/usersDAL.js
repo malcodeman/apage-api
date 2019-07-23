@@ -36,8 +36,25 @@ export async function setPageField(domain, field, value) {
   }
 }
 
+export async function pushPageField(domain, field, value) {
+  const user = await User.findOneAndUpdate(
+    { [`pages.domain`]: domain },
+    { $push: { [`pages.$.${field}`]: value } },
+    { new: true, select: `pages.${field}` }
+  );
+
+  if (user) {
+    const length = user.pages[0][field].length;
+
+    return user.pages[0][field][length - 1];
+  } else {
+    throw new Error("NotFoundException");
+  }
+}
+
 export default {
   findUserById,
   findPageByDomain,
-  setPageField
+  setPageField,
+  pushPageField
 };

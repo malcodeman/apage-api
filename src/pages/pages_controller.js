@@ -148,40 +148,15 @@ export async function addSocialLink(req, res, next) {
   try {
     const { domain } = req.params;
     const { url } = req.body;
-    const userId = req.userId;
-    const user = await User.findOne({ "pages.domain": domain }, "pages");
+    const id = nanoid();
+    const updatedField = await usersDAL.pushPageField(domain, "socialLinks", {
+      id,
+      url
+    });
 
-    if (user) {
-      const pages = user.pages.map(page => {
-        if (page.domain === domain) {
-          const socialLinks = page.socialLinks;
-
-          socialLinks.push({ id: nanoid(), url });
-
-          return {
-            ...page,
-            socialLinks
-          };
-        }
-        return page;
-      });
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-          pages
-        },
-        { new: true, select: "pages" }
-      );
-      const updatedPage = pages.find(page => page.domain === domain);
-      const newUrl =
-        updatedPage.socialLinks[updatedPage.socialLinks.length - 1];
-
-      res.status(200).send(newUrl);
-    } else {
-      res.status(404).send({ exception: "PageNotFoundException" });
-    }
+    res.status(200).send(updatedField);
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
 
