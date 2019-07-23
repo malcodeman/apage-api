@@ -9,6 +9,7 @@ const { PORT, MONGODB_URI } = process.env;
 const app = express();
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+mongoose.set("useFindAndModify", false);
 
 app.use(cors());
 app.use(

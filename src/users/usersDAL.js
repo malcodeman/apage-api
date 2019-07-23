@@ -22,7 +22,22 @@ export async function findPageByDomain(domain) {
   }
 }
 
+export async function setPageField(domain, field, value) {
+  const user = await User.findOneAndUpdate(
+    { [`pages.domain`]: domain },
+    { $set: { [`pages.$.${field}`]: value } },
+    { new: true, select: `pages.${field}` }
+  );
+
+  if (user) {
+    return user.pages[0][field];
+  } else {
+    throw new Error("NotFoundException");
+  }
+}
+
 export default {
   findUserById,
-  findPageByDomain
+  findPageByDomain,
+  setPageField
 };

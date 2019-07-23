@@ -56,36 +56,15 @@ export async function create(req, res, next) {
 export async function updateDomain(req, res, next) {
   try {
     const { domain } = req.params;
-    const userId = req.userId;
-    const user = await User.findOne({ "pages.domain": domain }, "pages");
+    const updatedValue = await usersDAL.setPageField(
+      domain,
+      "domain",
+      req.body.domain
+    );
 
-    if (user) {
-      const pages = user.pages.map(page => {
-        if (page.domain === domain) {
-          const { domain } = req.body;
-
-          return {
-            ...page,
-            domain
-          };
-        }
-        return page;
-      });
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-          pages
-        },
-        { new: true, select: "pages" }
-      );
-      const updatedPage = pages.find(page => page.domain === req.body.domain);
-
-      res.status(200).send({ oldDomain: domain, domain: updatedPage.domain });
-    } else {
-      res.status(404).send({ exception: "PageNotFoundException" });
-    }
+    res.status(200).send({ oldDomain: domain, domain: updatedValue });
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
 
@@ -138,72 +117,30 @@ export async function update(req, res, next) {
 export async function updateMainImage(req, res, next) {
   try {
     const { domain } = req.params;
-    const userId = req.userId;
-    const user = await User.findOne({ "pages.domain": domain }, "pages");
+    const updatedValue = await usersDAL.setPageField(
+      domain,
+      "mainImageURL",
+      req.body.mainImageURL
+    );
 
-    if (user) {
-      const pages = user.pages.map(page => {
-        if (page.domain === domain) {
-          const { mainImageURL } = req.body;
-
-          return {
-            ...page,
-            mainImageURL
-          };
-        }
-        return page;
-      });
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-          pages
-        },
-        { new: true, select: "pages" }
-      );
-      const updatedPage = pages.find(page => page.domain === domain);
-
-      res.status(200).send({ mainImageURL: updatedPage.mainImageURL });
-    } else {
-      res.status(404).send({ exception: "PageNotFoundException" });
-    }
+    res.status(200).send({ mainImageURL: updatedValue });
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
 
 export async function updateProfileImage(req, res, next) {
   try {
     const { domain } = req.params;
-    const userId = req.userId;
-    const user = await User.findOne({ "pages.domain": domain }, "pages");
+    const updatedValue = await usersDAL.setPageField(
+      domain,
+      "profileImageURL",
+      req.body.profileImageURL
+    );
 
-    if (user) {
-      const pages = user.pages.map(page => {
-        if (page.domain === domain) {
-          const { profileImageURL } = req.body;
-
-          return {
-            ...page,
-            profileImageURL
-          };
-        }
-        return page;
-      });
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-          pages
-        },
-        { new: true, select: "pages" }
-      );
-      const updatedPage = pages.find(page => page.domain === domain);
-
-      res.status(200).send({ profileImageURL: updatedPage.profileImageURL });
-    } else {
-      res.status(404).send({ exception: "PageNotFoundException" });
-    }
+    res.status(200).send({ profileImageURL: updatedValue });
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
 
