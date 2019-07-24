@@ -2,54 +2,22 @@ import nanoid from "nanoid";
 
 import User from "../users/users_model";
 import usersDAL from "../users/usersDAL";
+import { DEFAULT_CARD_PAGE } from "./pagesConstants";
 
 export async function create(req, res, next) {
   try {
+    const { template } = req.body;
     const userId = req.userId;
-    const {
-      template,
-      title,
-      name,
-      tagline,
-      location,
-      cta_button_text,
-      cta_button_link
-    } = req.body;
-    const mainImageURL =
-      "https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5";
-    const profileImageURL =
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e";
-    const socialLinks = [
-      { id: nanoid(), url: "https://www.instagram.com/dualipa/" },
-      { id: nanoid(), url: "https://www.facebook.com/dualipaofficial/" }
-    ];
-    const newPage = {
-      id: nanoid(),
-      domain: nanoid(),
-      createdAt: Date.now(),
-      template,
-      title,
-      name,
-      tagline,
-      location,
-      cta_button_text,
-      cta_button_link,
-      mainImageURL,
-      profileImageURL,
-      socialLinks
-    };
-    const user = await User.findByIdAndUpdate(
-      userId,
-      {
-        $push: { pages: newPage }
-      },
-      { new: true, select: "pages" }
-    );
-    const lastPage = user.pages[user.pages.length - 1];
 
-    res.status(200).send(lastPage);
+    if (template === DEFAULT_CARD_PAGE.template) {
+      const page = await usersDAL.pushPage(userId, DEFAULT_CARD_PAGE);
+
+      res.status(200).send(page);
+    } else {
+      throw new Error("TemplateNotFound");
+    }
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
 
@@ -81,8 +49,8 @@ export async function update(req, res, next) {
             name,
             tagline,
             location,
-            cta_button_text,
-            cta_button_link
+            ctaButtonText,
+            ctaButtonLink
           } = req.body;
 
           return {
@@ -90,8 +58,8 @@ export async function update(req, res, next) {
             name,
             tagline,
             location,
-            cta_button_text,
-            cta_button_link
+            ctaButtonText,
+            ctaButtonLink
           };
         }
         return page;

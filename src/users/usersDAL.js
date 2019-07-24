@@ -68,10 +68,27 @@ export async function pullPageField(domain, field, id) {
   }
 }
 
+export async function pushPage(userId, newPage) {
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $push: { pages: newPage }
+    },
+    { new: true, select: "pages" }
+  );
+
+  if (user) {
+    return user.pages[user.pages.length - 1];
+  } else {
+    throw new Error("NotFoundException");
+  }
+}
+
 export default {
   findUserById,
   findPageByDomain,
   setPageField,
   pushPageField,
-  pullPageField
+  pullPageField,
+  pushPage
 };
