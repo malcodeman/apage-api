@@ -24,13 +24,13 @@ export async function create(req, res, next) {
 export async function updateDomain(req, res, next) {
   try {
     const { domain } = req.params;
-    const updatedValue = await usersDAL.setPageField(
+    const updatedField = await usersDAL.setPageField(
       domain,
       "domain",
       req.body.domain
     );
 
-    res.status(200).send({ oldDomain: domain, domain: updatedValue });
+    res.status(200).send({ oldDomain: domain, domain: updatedField.domain });
   } catch (error) {
     res.status(400).send({ message: error.message, stack: error.stack });
   }
@@ -85,13 +85,13 @@ export async function update(req, res, next) {
 export async function updateMainImage(req, res, next) {
   try {
     const { domain } = req.params;
-    const updatedValue = await usersDAL.setPageField(
+    const updatedField = await usersDAL.setPageField(
       domain,
       "mainImageURL",
       req.body.mainImageURL
     );
 
-    res.status(200).send({ mainImageURL: updatedValue });
+    res.status(200).send(updatedField);
   } catch (error) {
     res.status(400).send({ message: error.message, stack: error.stack });
   }
@@ -100,13 +100,13 @@ export async function updateMainImage(req, res, next) {
 export async function updateProfileImage(req, res, next) {
   try {
     const { domain } = req.params;
-    const updatedValue = await usersDAL.setPageField(
+    const updatedField = await usersDAL.setPageField(
       domain,
       "profileImageURL",
       req.body.profileImageURL
     );
 
-    res.status(200).send({ profileImageURL: updatedValue });
+    res.status(200).send(updatedField);
   } catch (error) {
     res.status(400).send({ message: error.message, stack: error.stack });
   }

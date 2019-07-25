@@ -30,7 +30,7 @@ export async function setPageField(domain, field, value) {
   );
 
   if (user) {
-    return user.pages[0][field];
+    return user.pages.find(obj => obj[field] === value);
   } else {
     throw new Error("NotFoundException");
   }
