@@ -22,15 +22,37 @@ export async function findPageByDomain(domain) {
   }
 }
 
-export async function setPageField(domain, field, value) {
+export async function setPageField(domain, field) {
+  const key = Object.keys(field)[0];
+  const value = Object.values(field)[0];
   const user = await User.findOneAndUpdate(
     { [`pages.domain`]: domain },
-    { $set: { [`pages.$.${field}`]: value } },
-    { new: true, select: `pages.${field}` }
+    { $set: { [`pages.$.${key}`]: value } },
+    { new: true, select: `pages.${key}` }
   );
 
   if (user) {
-    return user.pages.find(obj => obj[field] === value);
+    return user.pages.find(obj => obj[key] === value);
+  } else {
+    throw new Error("NotFoundException");
+  }
+}
+
+export async function setPageFields(domain, fields) {
+  const obj = {};
+
+  for (let [key, value] of Object.entries(fields)) {
+    obj[`pages.$.${key}`] = value;
+  }
+
+  const user = await User.findOneAndUpdate(
+    { [`pages.domain`]: domain },
+    { $set: obj },
+    { new: true, select: "pages" }
+  );
+
+  if (user) {
+    return user.pages.find(page => page.domain === domain);
   } else {
     throw new Error("NotFoundException");
   }
@@ -88,6 +110,7 @@ export default {
   findUserById,
   findPageByDomain,
   setPageField,
+  setPageFields,
   pushPageField,
   pullPageField,
   pushPage

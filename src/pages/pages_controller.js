@@ -1,6 +1,5 @@
 import nanoid from "nanoid";
 
-import User from "../users/users_model";
 import usersDAL from "../users/usersDAL";
 import { DEFAULT_CARD_PAGE } from "./pagesConstants";
 
@@ -24,11 +23,9 @@ export async function create(req, res, next) {
 export async function updateDomain(req, res, next) {
   try {
     const { domain } = req.params;
-    const updatedField = await usersDAL.setPageField(
-      domain,
-      "domain",
-      req.body.domain
-    );
+    const updatedField = await usersDAL.setPageField(domain, {
+      domain: req.body.domain
+    });
 
     res.status(200).send({ oldDomain: domain, domain: updatedField.domain });
   } catch (error) {
@@ -39,57 +36,27 @@ export async function updateDomain(req, res, next) {
 export async function update(req, res, next) {
   try {
     const { domain } = req.params;
-    const userId = req.userId;
-    const user = await User.findOne({ "pages.domain": domain }, "pages");
+    const fields = {
+      name: req.body.name,
+      tagline: req.body.tagline,
+      location: req.body.location,
+      ctaButtonText: req.body.ctaButtonText,
+      ctaButtonLink: req.body.ctaButtonLink
+    };
+    const updatedPage = await usersDAL.setPageFields(domain, fields);
 
-    if (user) {
-      const pages = user.pages.map(page => {
-        if (page.domain === domain) {
-          const {
-            name,
-            tagline,
-            location,
-            ctaButtonText,
-            ctaButtonLink
-          } = req.body;
-
-          return {
-            ...page,
-            name,
-            tagline,
-            location,
-            ctaButtonText,
-            ctaButtonLink
-          };
-        }
-        return page;
-      });
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-          pages
-        },
-        { new: true, select: "pages" }
-      );
-      const updatedPage = pages.find(page => page.domain === domain);
-
-      res.status(200).send(updatedPage);
-    } else {
-      res.status(404).send({ exception: "PageNotFoundException" });
-    }
+    res.status(200).send(updatedPage);
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
 
 export async function updateMainImage(req, res, next) {
   try {
     const { domain } = req.params;
-    const updatedField = await usersDAL.setPageField(
-      domain,
-      "mainImageURL",
-      req.body.mainImageURL
-    );
+    const updatedField = await usersDAL.setPageField(domain, {
+      mainImageURL: req.body.mainImageURL
+    });
 
     res.status(200).send(updatedField);
   } catch (error) {
@@ -100,11 +67,9 @@ export async function updateMainImage(req, res, next) {
 export async function updateProfileImage(req, res, next) {
   try {
     const { domain } = req.params;
-    const updatedField = await usersDAL.setPageField(
-      domain,
-      "profileImageURL",
-      req.body.profileImageURL
-    );
+    const updatedField = await usersDAL.setPageField(domain, {
+      profileImageURL: req.body.profileImageURL
+    });
 
     res.status(200).send(updatedField);
   } catch (error) {
