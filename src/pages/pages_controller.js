@@ -116,18 +116,7 @@ export async function getPages(req, res, next) {
 
     res.status(200).send(user.pages);
   } catch (error) {
-    const message = error.message;
-    const stack = error.stack;
-
-    if (message === "UserNotFoundException") {
-      res.status(404).send({
-        exception: "UserNotFoundException",
-        message,
-        stack
-      });
-      return;
-    }
-    res.status(400).send({ exception: "General", message, stack });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
 
@@ -138,17 +127,6 @@ export async function getPage(req, res, next) {
 
     res.status(200).send(page);
   } catch (error) {
-    const message = error.message;
-    const stack = error.stack;
-
-    if (message === "PageNotFoundException") {
-      res.status(404).send({
-        exception: "PageNotFoundException",
-        message,
-        stack
-      });
-      return;
-    }
-    res.status(400).send({ exception: "General", message, stack });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
