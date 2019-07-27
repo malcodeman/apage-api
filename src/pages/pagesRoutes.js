@@ -1,6 +1,6 @@
 import express from "express";
 
-import { requireAuthentication } from "../auth/auth_middleware";
+import { requireAuthentication } from "../auth/authMiddleware";
 import {
   create,
   updateDomain,
@@ -11,7 +11,7 @@ import {
   update,
   getPages,
   getPage
-} from "./pages_controller";
+} from "./pagesController";
 
 const router = express.Router();
 

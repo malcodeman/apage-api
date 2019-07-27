@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import User from "../users/users_model";
+import User from "../users/usersModel";
 import log from "./log";
 
 const { MONGODB_URI } = process.env;
