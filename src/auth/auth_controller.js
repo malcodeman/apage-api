@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import argon from "argon2";
 
-import User from "../users/users_model";
 import usersDAL from "../users/usersDAL";
 
 export async function signup(req, res, next) {
@@ -10,7 +9,8 @@ export async function signup(req, res, next) {
 
     const hash = await argon.hash(password);
     const user = await usersDAL.create(email, hash);
-    const token = jwt.sign({ id: user._id }, "secret", {
+    const id = user.id;
+    const token = jwt.sign({ id }, "secret", {
       expiresIn: 86400
     });
 
@@ -23,22 +23,22 @@ export async function signup(req, res, next) {
 export async function login(req, res, next) {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await usersDAL.findUser(email);
 
-    if (user === null) {
-      res.status(400).send({ exception: "UserNotFoundException" });
-      return;
-    }
     if (await argon.verify(user.password, password)) {
-      const token = jwt.sign({ id: user.id }, "secret", {
+      const id = user.id;
+      const token = jwt.sign({ id }, "secret", {
         expiresIn: 86400
       });
 
-      res.status(200).send({ token, user });
+      res.status(200).send({
+        token,
+        user: { id, email: user.email, createdAt: user.createdAt }
+      });
     } else {
-      res.status(400).send({ exception: "NotAuthorizedException" });
+      throw new Error("NotAuthorizedException");
     }
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }

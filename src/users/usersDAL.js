@@ -4,9 +4,19 @@ export async function create(email, password) {
   const user = await User.create({ email, password });
 
   if (user) {
-    return { _id: user._id, email: user.email };
+    return { id: user.id, email: user.email, createdAt: user.createdAt };
   } else {
     throw new Error("CanNotCreateUserException");
+  }
+}
+
+export async function findUser(email) {
+  const user = await User.findOne({ email }, "id email password createdAt");
+
+  if (user) {
+    return user;
+  } else {
+    throw new Error("UserNotFoundException");
   }
 }
 
@@ -118,6 +128,7 @@ export async function pushPage(userId, newPage) {
 
 export default {
   create,
+  findUser,
   findUserById,
   findPageByDomain,
   setPageField,
