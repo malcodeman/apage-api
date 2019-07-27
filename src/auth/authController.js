@@ -3,6 +3,8 @@ import argon from "argon2";
 
 import usersDAL from "../users/usersDAL";
 
+const { PRIVATE_KEY } = process.env;
+
 export async function signup(req, res, next) {
   try {
     const { email, password } = req.body;
@@ -10,7 +12,7 @@ export async function signup(req, res, next) {
     const hash = await argon.hash(password);
     const user = await usersDAL.create(email, hash);
     const id = user.id;
-    const token = jwt.sign({ id }, "secret", {
+    const token = jwt.sign({ id }, PRIVATE_KEY, {
       expiresIn: 86400
     });
 
@@ -27,7 +29,7 @@ export async function login(req, res, next) {
 
     if (await argon.verify(user.password, password)) {
       const id = user.id;
-      const token = jwt.sign({ id }, "secret", {
+      const token = jwt.sign({ id }, PRIVATE_KEY, {
         expiresIn: 86400
       });
 

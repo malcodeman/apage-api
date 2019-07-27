@@ -12,6 +12,7 @@ Simple RESTful mongoDB API.
 ```
 MONGODB_URI = mongodb://root:fakepassword1@ds229448.mlab.com:29448/templates
 PORT = 4000
+PRIVATE_KEY = secret
 ```
 
 To start the service run:
