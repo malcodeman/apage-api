@@ -2,20 +2,21 @@ import jwt from "jsonwebtoken";
 import argon from "argon2";
 
 import User from "../users/users_model";
+import usersDAL from "../users/usersDAL";
 
 export async function signup(req, res, next) {
   try {
     const { email, password } = req.body;
 
     const hash = await argon.hash(password);
-    const user = await User.create({ email, password: hash });
+    const user = await usersDAL.create(email, hash);
     const token = jwt.sign({ id: user._id }, "secret", {
       expiresIn: 86400
     });
 
     res.status(200).send({ token, user });
   } catch (error) {
-    res.status(400).send({ exception: "general", error });
+    res.status(400).send({ message: error.message, stack: error.stack });
   }
 }
 

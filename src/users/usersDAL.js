@@ -1,5 +1,15 @@
 import User from "./users_model";
 
+export async function create(email, password) {
+  const user = await User.create({ email, password });
+
+  if (user) {
+    return { _id: user._id, email: user.email };
+  } else {
+    throw new Error("CanNotCreateUserException");
+  }
+}
+
 export async function findUserById(id) {
   const user = await User.findById(id, "pages");
 
@@ -107,6 +117,7 @@ export async function pushPage(userId, newPage) {
 }
 
 export default {
+  create,
   findUserById,
   findPageByDomain,
   setPageField,
