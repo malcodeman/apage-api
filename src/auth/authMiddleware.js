@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken";
 
+const { PRIVATE_KEY } = process.env;
+
 export function requireAuthentication(req, res, next) {
   try {
     const token = req.headers.authorization;
-    const decoded = jwt.verify(token, "secret");
+    const decoded = jwt.verify(token, PRIVATE_KEY);
 
     req.userId = decoded.id;
     next();
