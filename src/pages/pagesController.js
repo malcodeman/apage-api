@@ -1,7 +1,7 @@
 import nanoid from "nanoid";
 
 import usersDAL from "../users/usersDAL";
-import { DEFAULT_CARD_PAGE } from "./pagesConstants";
+import { DEFAULT_CARD_PAGE, getDefaultCardPage } from "./pagesConstants";
 
 export async function create(req, res, next) {
   try {
@@ -9,7 +9,7 @@ export async function create(req, res, next) {
     const userId = req.userId;
 
     if (template === DEFAULT_CARD_PAGE.template) {
-      const page = await usersDAL.pushPage(userId, DEFAULT_CARD_PAGE);
+      const page = await usersDAL.pushPage(userId, getDefaultCardPage());
 
       res.status(200).send(page);
     } else {
