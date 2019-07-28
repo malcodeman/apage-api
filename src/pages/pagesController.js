@@ -82,12 +82,12 @@ export async function addSocialLink(req, res, next) {
     const { domain } = req.params;
     const { url } = req.body;
     const id = nanoid();
-    const updatedField = await usersDAL.pushPageField(domain, "socialLinks", {
+    const pushedValue = await usersDAL.pushPageField(domain, "socialLinks", {
       id,
       url
     });
 
-    res.status(200).send(updatedField);
+    res.status(200).send(pushedValue);
   } catch (error) {
     res.status(400).send({ message: error.message, stack: error.stack });
   }
@@ -97,13 +97,13 @@ export async function removeSocialLink(req, res, next) {
   try {
     const { domain, linkId } = req.params;
     const userId = req.userId;
-    const pulledField = await usersDAL.pullPageField(
+    const pulledValue = await usersDAL.pullPageField(
       domain,
       "socialLinks",
       linkId
     );
 
-    res.status(200).send({ linkId: pulledField.id });
+    res.status(200).send({ linkId: pulledValue });
   } catch (error) {
     res.status(400).send({ message: error.message, stack: error.stack });
   }

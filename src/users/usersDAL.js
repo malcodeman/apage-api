@@ -86,9 +86,7 @@ export async function pushPageField(domain, field, value) {
   );
 
   if (user) {
-    const length = user.pages[0][field].length;
-
-    return user.pages[0][field][length - 1];
+    return value;
   } else {
     throw new Error("NotFoundException");
   }
@@ -97,14 +95,12 @@ export async function pushPageField(domain, field, value) {
 export async function pullPageField(domain, field, id) {
   const user = await User.findOneAndUpdate(
     { [`pages.domain`]: domain },
-    { $pull: { [`pages.$.${field}`]: { id: id } } },
+    { $pull: { [`pages.$.${field}`]: { id } } },
     { select: `pages.${field}` }
   );
 
   if (user) {
-    const pulledField = user.pages[0][field].find(field => field.id === id);
-
-    return pulledField;
+    return id;
   } else {
     throw new Error("NotFoundException");
   }
