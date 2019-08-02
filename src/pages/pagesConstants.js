@@ -7,7 +7,7 @@ export const DEFAULT_CARD_PAGE = {
   template: "card",
   title: "Card",
   ctaButtonText: "Get in Touch",
-  ctaButtonLink: "mailto:hi@templates.com",
+  ctaButtonLink: "mailto:hi@apage.com",
   mainImageURL: "https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5",
   profileImageURL: "https://i.imgur.com/fMSDhI2.jpg"
 };
