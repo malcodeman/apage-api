@@ -19,6 +19,6 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.13",
-    "nanoid": "^2.1.7"
+    "nanoid": "^3.1.31"
   }
 }
